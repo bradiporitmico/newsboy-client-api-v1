@@ -2,8 +2,6 @@
 
 namespace Newsboy\Client\v1;
 
-
-
 class Api{
 
 	static $classes = [];
@@ -71,7 +69,6 @@ class Api{
 		// ], 'API::call');
 
 		// self::$curl = curl_init();
-		$dbg = debug_backtrace();
 		
 		curl_setopt(self::$curl, CURLOPT_URL, $this->url);
 		if ($this->token){
@@ -92,12 +89,14 @@ class Api{
 		// \Nicer::print_r ($res, 'API::call - result as string');
 		// pre_print_r ($res);
 
-		self::$calls [] = [
-			'url' => "[".($method ? : 'GET')."] ".$this->url,
-			'function' => $dbg[3]['function'],
-			'file' => "{$dbg[3]['file']}:{$dbg[3]['line']}",
-			'time' => $dtime = (microtime(true) - $time) * 1000,
-		];
+		$dtime = (microtime(true) - $time) * 1000;
+		// $dbg = debug_backtrace();
+		// self::$calls [] = [
+		// 	'url' => "[".($method ? : 'GET')."] ".$this->url,
+		// 	'function' => $dbg[3]['function'],
+		// 	'file' => "{$dbg[3]['file']}:{$dbg[3]['line']}",
+		// 	'time' => $dtime,
+		// ];
 		self::$total_time += $dtime;
 
 		if (!$res){
@@ -218,22 +217,6 @@ class Api{
 	// }
 	
 
-
-
-	/**
-	 * Elimina tutti gli annunci dell'utente loggato
-	 *
-	 * @api
-	 * @throws     FailedCallException  Nel caso in cui il server REST abbia risposto con un errore. L'eccezione conterrà il messaggio di errore prodotto dal server
-	 * @return     mixed  La risposta ricevuta dal server
-	 */
-	public function deleteAll(){
-		$res = $this->call ("ads/ad/all", null, 'DELETE');
-		if (!$res->success){
-			throw (new FailedCallException($res->errorMessage))->setExceptionType($res->errorType);
-		}
-		return $res->response;
-	}	
 
 	/**
 	 * Crea un annuncio

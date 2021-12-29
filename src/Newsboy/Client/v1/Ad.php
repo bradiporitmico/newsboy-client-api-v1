@@ -47,6 +47,19 @@ class Ad {
 
 
 
+	/**
+	 * Elimina tutti gli annunci dell'utente loggato
+	 *
+	 * @api
+	 * @throws     FailedCallException  Nel caso in cui il server REST abbia risposto con un errore. L'eccezione conterrà il messaggio di errore prodotto dal server
+	 * @return     mixed  La risposta ricevuta dal server
+	 */
+	public function deleteAll(){
+		$res = $this->api->call ("ads/ad/all", null, 'DELETE');
+		return $res->response;
+	}	
+
+
 }
 
 
