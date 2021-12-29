@@ -5,7 +5,6 @@
     "keywords": ["newsboy","rent","ads","realestate"],
     "homepage": "https://dashboard.newsboy.it",
     "license": "GPL-3.0-or-later",
-    "version": "1.0.39",
     "authors":[{
         "name": "Paolo Rosi",
         "email": "paolo.rosi@newsboy.it",
