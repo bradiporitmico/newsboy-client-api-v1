@@ -17,7 +17,7 @@
     },
     "autoload": {
         "psr-4": {
-            "Newsboy\\Client\\v1": "src/"
+            "Newsboy\\Client\\v1\\": "src/"
         }
     }
 }
