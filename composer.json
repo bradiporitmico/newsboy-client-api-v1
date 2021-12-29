@@ -1,0 +1,23 @@
+{
+    "name": "newsboy/clientapi",
+    "type": "library",
+    "description": "NewsBoy client API",
+    "keywords": ["newsboy","rent","ads","realestate"],
+    "homepage": "https://dashboard.newsboy.it",
+    "license": "GPL-3.0-or-later",
+    "version": "1.0.39",
+    "authors":[{
+        "name": "Paolo Rosi",
+        "email": "paolo.rosi@newsboy.it",
+        "homepage": "https://dashboard.newsboy.it",
+        "role": "developer"
+    }],
+    "require": {
+        "php": ">=7.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "Newsboy\\Client\\v1": "src/"
+        }
+    }
+}
