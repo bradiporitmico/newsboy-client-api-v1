@@ -218,70 +218,7 @@ class Api{
 	// }
 	
 
-	/**
-	 * Recupera le informazioni di un annuncio
-	 *
-	 * @param      string  $id     	ID dell'annuncio 
-	 * @param      int  	 $version	La versione che si vuole recuperare. Se non specificato verrà ritornata l'ultima versione dell'annuncio
-	 *
-	 * @api
-	 * @throws     FailedCallException  Nel caso in cui il server REST abbia risposto con un errore. L'eccezione conterrà il messaggio di errore prodotto dal server
-	 * @return     mixed  La risposta ricevuta dal server
-	 */
-	public function info(string $id, int $version = 0){
-		if ($version){
-			$res = $this->call ("ads/ad/{$id}/{$version}");
-		}	else{
-			$res = $this->call ("ads/ad/{$id}");
-		}
-		if (!$res->success){
-			throw new AdNotFoundException($res->errorMessage);
-		}
-		return $res->response;
-	}	
 
-	/**
-	 * Recupera le informazioni di un annuncio (nuova versione)
-	 *
-	 * @param      string  $id     	ID dell'annuncio 
-	 * @param      object  $options Una serie di opzioni da passare alla richiesta
-	 * Le opzioni sono un array di array associativo espressi in questa forma:
-	 * [
-	 * 	"wanted":[ 
-	 * 		"nome_del_campo", "nome_del_campo", "nome_del_campo" 
-	 * 	]
-	 * ]
-	 *
-	 * @api
-	 * @throws     FailedCallException  Nel caso in cui il server REST abbia risposto con un errore. L'eccezione conterrà il messaggio di errore prodotto dal server
-	 * @return     mixed  La risposta ricevuta dal server
-	 */
-
-	 
-	public function getAd(string $id, $options = null){
-		$res = $this->call ("ads/get/{$id}", json_encode($options), 'POST');
-		if (!$res->success){
-			throw new AdNotFoundException($res->errorMessage);
-		}
-		return $res->response;
-	}	
-
-	/**
-	 * Elimina un annuncio
-	 *
-	 * @param      string  $id     L'id dell'annuncio
-	 *
-	 * @api
-	 * @throws     FailedCallException  Nel caso in cui il server REST abbia risposto con un errore. L'eccezione conterrà il messaggio di errore prodotto dal server
-	 * @return     mixed  La risposta ricevuta dal server
-	 */
-	public function delete(string $id){
-		$res = $this->call ("ads/ad/".urlencode($id), null, 'DELETE');
-		if (!$res->success){
-			throw (new FailedCallException($res->errorMessage))->setExceptionType($res->errorType);
-		}
-		return $res->response;
-	}	
 
 	/**
 	 * Elimina tutti gli annunci dell'utente loggato

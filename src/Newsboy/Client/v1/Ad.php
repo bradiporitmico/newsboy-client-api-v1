@@ -31,6 +31,21 @@ class Ad {
 		return $res->response;
 	}	
 
+	/**
+	 * Elimina un annuncio
+	 *
+	 * @param      string  $id     L'id dell'annuncio
+	 *
+	 * @api
+	 * @throws     FailedCallException  Nel caso in cui il server REST abbia risposto con un errore. L'eccezione conterrà il messaggio di errore prodotto dal server
+	 * @return     mixed  La risposta ricevuta dal server
+	 */
+	public function delete(string $id){
+		$res = $this->api->call ("ads/ad/".urlencode($id), null, 'DELETE');
+		return $res->response;
+	}	
+
+
 
 }
 
