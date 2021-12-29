@@ -10,15 +10,18 @@ class ApiPersistent extends Api{
 
 
 	private function getPersistentLoginData(){
-		return  \Session::get(self::class."\Login");
+		// return  \lib\Session::get(self::class."\Login");
+		return  $_SESSION[self::class."\Login"] ?? false;
 	}
 	
 	private function clearPersistentLoginData(){
-		return  \Session::unset(self::class."\Login");
+		unset ($_SESSION[self::class."\Login"]);
+		// return  \lib\Session::unset(self::class."\Login");
 	}
 	
 	private function setPersistentLoginData($data){
-		\Session::set(self::class."\Login", $data);
+		$_SESSION[self::class."\Login"] = $data;
+		// \lib\Session::set(self::class."\Login", $data);
 	}
 	
 	public function logout (){
