@@ -75,6 +75,8 @@ class ApiPersistent extends Api{
 
 				// rifaccio la chiamata
 				return parent::call($path, $post, $method);
+			} else {
+				throw $e;
 			}
 		}
 	}
