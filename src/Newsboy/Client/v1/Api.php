@@ -487,16 +487,6 @@ class Api{
 	}
 
 	
-	public function statsOrigin(){
-		$res = $this->call ("ads/stats/origin");
-		if (!$res->success){
-			$e = new FailedCallException($res->errorMessage);
-			$e->setExceptionType($res->errorType);
-			throw $e;
-		}
-		return $res->response;
-	}
-
 	public function getPropertiesList(string $category){
 		$res = $this->call ("ads/properties/{$category}");
 		if (!$res->success){
