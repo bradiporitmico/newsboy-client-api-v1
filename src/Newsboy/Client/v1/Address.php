@@ -11,7 +11,7 @@ class Address{
 	}
 
 	public function municipalitySearch(string $term){
-		$res = $this->api->call ("address/search/municipality/{$term}");
+		$res = $this->api->call ("address/search/municipality/".urlencode($term));
 		return $res->response;
 	}
 
