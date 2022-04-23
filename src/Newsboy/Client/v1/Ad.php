@@ -40,17 +40,14 @@ class Ad {
 	 * E' possibile recuperare una determinata versione dell'annuncio chiamando la funzione $this->info()
 	 * 
 	 * @param      string  $id     L'id dell'annuncio
- 	 * @param      array  $properties     Un elenco di proprietà dell'annuncio.
+ 	 * @param      array  $datas     Un elenco di proprietà dell'annuncio.
 	 * Per l'elenco delle proprietà e la loro funzione fare guardare la create
 	 *
 	 * @api
 	 * @throws     FailedCallException  Nel caso in cui il server REST abbia risposto con un errore. L'eccezione conterrà il messaggio di errore prodotto dal server
 	 * @return     mixed  La risposta ricevuta dal server
 	 */
-	public function update(string $id, $properties){
-		$datas = [
-			'fields' => $properties
-		];
+	public function update(string $id, $datas){
 		$res = $this->api->call ("ads/ad/".urlencode($id), json_encode($datas), 'PUT');
 		if (!$res->success){
 			throw (new FailedCallException($res->errorMessage))->setExceptionType($res->errorType);
