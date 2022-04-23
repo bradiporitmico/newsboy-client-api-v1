@@ -119,6 +119,13 @@ class Api{
 
 
 	/**
+	 * Get the value of request_id
+	 */ 
+	public function getRequestId(){
+		return $this->request_id;
+	}
+
+	/**
 	 * Ritorna il token di connessione
 	 *
 	 * @api
@@ -219,85 +226,6 @@ class Api{
 
 
 	/**
-	 * Crea un annuncio
-	 * 
- 	 * @param      array  $properties     Un elenco di proprietà dell'annuncio.
-	 * Le proprietà sono un elenco di chiave => valore, dove la chiave è il nome della
-	 * proprietà e valore è il valore della proprietà.
-	 * Ad esempio:
-	 * 	$properties = [
-	 * 		'address' => 'Via Milano, 13',
-	 * 		'city' => 'Firenze',
-	 * 		 .....
-	 * 	]
-	 * 
-	 * Le proprietà ammesse sono le seguenti:
-	 * 
-	 *	category = categoria principale (recuperabili dalla chiamata getCategories())
-	 * 	sub_category = sotto categorie (recuperabili dalla chiamata /ads/subcategories/{category})
-	 * 	
-	 *	address = indirizzo dell'annuncio
-	 *	bathrooms = numero di bagni
-	 *	bedrooms = numero di stanze da letto
-	 * 	city = città (Firenze, Roma, ...)
-	 *	city_area = località della città (stazione, centro, semicentro...)
-	 *	condition = condizioni (ristrutturato, in buone condizioni, ....)
-	 *	content = Contenuto descrittivo dell'annuncio
-	 *	floor_area = area calpestabile in m²
-	 *	floor_number = numero di piano (primo piano, piano terra, ....)
-	 *	images = un array di url di immagini
-	 *	latitude = posizione geografica (latitudine) in gradi decimali  (double)
-	 *	longitude = posizione geografica (longitudine) in gradi decimali  (double)
-	 *	postcode = CAP
-	 *	price = prezzo (float)
-	 *	region = provincia
-	 *	rooms = numero di stanze (esclusi bagno e terrazzi)
-	 * 	title = titolo dell'annuncion
-	 *	url = Link verso il sito degli annunci
-	 *	year = Anno 
-	 *	web_user_id = id del webuser gccms
-	 *
-	 *
-	 * @api
-	 * @throws     FailedCallException  Nel caso in cui il server REST abbia risposto con un errore. L'eccezione conterrà il messaggio di errore prodotto dal server
-	 * @return     mixed  La risposta ricevuta dal server
-	 */
-	public function create($properties){
-		$datas = [
-			'fields' => $properties
-		];
-		$res = $this->call ("ads/create", json_encode($datas));
-		if (!$res->success){
-			throw (new FailedCallException($res->errorMessage))->setExceptionType($res->errorType);
-		}
-		return $res->response;
-	}
-
-	/**
-	 * Aggiorna le proprietà di un annuncio
-	 * L'operazione di aggiornamento di un annuncio creerà una nuova versione dell'annuncio
-	 * E' possibile recuperare una determinata versione dell'annuncio chiamando la funzione $this->info()
-	 * 
-	 * @param      string  $id     L'id dell'annuncio
- 	 * @param      array  $properties     Un elenco di proprietà dell'annuncio.
-	 * Per l'elenco delle proprietà e la loro funzione fare guardare la create
-	 *
-	 * @api
-	 * @throws     FailedCallException  Nel caso in cui il server REST abbia risposto con un errore. L'eccezione conterrà il messaggio di errore prodotto dal server
-	 * @return     mixed  La risposta ricevuta dal server
-	 */
-	public function update(string $id, $properties){
-		$datas = [
-			'fields' => $properties
-		];
-		$res = $this->call ("ads/ad/".urlencode($id), json_encode($datas), 'PUT');
-		if (!$res->success){
-			throw (new FailedCallException($res->errorMessage))->setExceptionType($res->errorType);
-		}
-		return $res->response;
-	}
-
-	/**
 	 * Torna un elenco di risultati di zone,comuni,province in base al termine specificato.
 	 *
 	 * @param      string  $term   Il termine da cercare.
@@ -368,93 +296,6 @@ class Api{
 		return $res->response;
 	}
 
-	/**
-	 * Segna come "pubblicato" un annuncio
-	 *
-	 * @param      string  $id     l'id dell'annuncio
-	 *
-	 * @api
-	 * @throws     FailedCallException  Nel caso in cui il server REST abbia risposto con un errore. L'eccezione conterrà il messaggio di errore prodotto dal server
-	 * @return     mixed  La risposta ricevuta dal server
-	 */
-	public function publish(string $id){
-		$res = $this->call ("ads/publish/".urlencode($id));
-		if (!$res->success){
-			throw (new FailedCallException($res->errorMessage))->setExceptionType($res->errorType);
-		}
-		return $res->response;
-	}
-
-	/**
-	 * Segna come "spubblicato" un annuncio
-	 *
-	 * @param      string  $id     l'id dell'annuncio
-	 *
-	 * @api
-	 * @throws     FailedCallException  Nel caso in cui il server REST abbia risposto con un errore. L'eccezione conterrà il messaggio di errore prodotto dal server
-	 * @return     mixed  La risposta ricevuta dal server
-	 */
-	public function unpublish(string $id){
-		$res = $this->call ("ads/unpublish/".urlencode($id));
-		if (!$res->success){
-			throw (new FailedCallException($res->errorMessage))->setExceptionType($res->errorType);
-		}
-		return $res->response;
-	}
-
-	/**
-	 * Segna come "approvato" una versione di un annuncio
-	 *
-	 * @param      string  $id     l'id dell'annuncio
-	 * @param      int  $version     la versione dell'annuncio
-	 *
-	 * @api
-	 * @throws     FailedCallException  Nel caso in cui il server REST abbia risposto con un errore. L'eccezione conterrà il messaggio di errore prodotto dal server
-	 * @return     mixed  La risposta ricevuta dal server
-	 */
-	public function approve(string $id, int $version){
-		$res = $this->call ("ads/approve/".urlencode($id)."/{$version}");
-		if (!$res->success){
-			throw (new FailedCallException($res->errorMessage))->setExceptionType($res->errorType);
-		}
-		return $res->response;
-	}
-
-	/**
-	 * Segna come "approvato" tutte le versioni in attesa di approvazione
-	 *
-	 * @param      string  $id     l'id dell'annuncio
-	 *
-	 * @api
-	 * @throws     FailedCallException  Nel caso in cui il server REST abbia risposto con un errore. L'eccezione conterrà il messaggio di errore prodotto dal server
-	 * @return     mixed  La risposta ricevuta dal server
-	 */
-	public function approveAllPendings(string $id){
-		$res = $this->call ("ads/approve/".urlencode($id)."/all");
-		if (!$res->success){
-			throw (new FailedCallException($res->errorMessage))->setExceptionType($res->errorType);
-		}
-		return $res->response;
-	}
-
-	/**
-	 * Toglie l' "approvazione" ad una versione di un annuncio
-	 *
-	 * @param      string  $id     l'id dell'annuncio
-	 * @param      int  $version     la versione dell'annuncio
-	 *
-	 * @api
-	 * @throws     FailedCallException  Nel caso in cui il server REST abbia risposto con un errore. L'eccezione conterrà il messaggio di errore prodotto dal server
-	 * @return     mixed  La risposta ricevuta dal server
-	 */
-	public function unapprove(string $id, int $version, string $reason = null){
-		$res = $this->call ("ads/unapprove/".urlencode($id)."/{$version}");
-		if (!$res->success){
-			throw (new FailedCallException($res->errorMessage))->setExceptionType($res->errorType);
-		}
-		return $res->response;
-	}
-
 
 	/**
 	 * Crea un blob.
@@ -516,6 +357,17 @@ class Api{
 		return $res->response;
 	}
 
+	/**
+	 * Clear posts cache
+	 */
+	public function flushCache(){
+		$res = $this->call ("post/cache/flush");
+		if (!$res->success){
+			throw (new FailedCallException($res->errorMessage))->setExceptionType($res->errorType);
+		}
+		return $res->response;
+	}
+
 
 	/**
 	 * version
@@ -529,13 +381,6 @@ class Api{
 
 
 
-
-	/**
-	 * Get the value of request_id
-	 */ 
-	public function getRequestId(){
-		return $this->request_id;
-	}
 }
 
 API::$curl = curl_init();
