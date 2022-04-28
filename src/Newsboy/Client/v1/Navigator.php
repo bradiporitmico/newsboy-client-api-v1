@@ -2,6 +2,8 @@
 
 namespace Newsboy\Client\v1;
 
+class NavigatorAdNotFound extends \Exception {};
+
 class Navigator extends Finder{
 
 	private $filters = null;
@@ -164,7 +166,7 @@ class Navigator extends Finder{
 				}
 			}
 		}
-		throw new \Exception ("Navigator: unable to find uuid '$uuid'");
+		throw new NavigatorAdNotFound ("Navigator: unable to find uuid '$uuid'");
 	}
 
 	/**
