@@ -56,6 +56,27 @@ class Ad {
 	}
 
 	
+	/**
+	 * Aggiorna le proprietà di un annuncio
+	 * Questo metodo differisce dal metodo update in quanto solo i campi specificati in fields saranno modificati, tutti gli altri
+	 * rimarranno quelli già presenti
+	 * L'operazione creerà una nuova versione dell'annuncio
+	 * E' possibile recuperare una determinata versione dell'annuncio chiamando la funzione $this->info()
+	 * 
+	 * @param      string  $id     L'id dell'annuncio
+ 	 * @param      array  $datas     Un elenco di proprietà dell'annuncio.
+	 * Per l'elenco delle proprietà e la loro funzione fare guardare la create
+	 *
+	 * @api
+	 * @throws     FailedCallException  Nel caso in cui il server REST abbia risposto con un errore. L'eccezione conterrà il messaggio di errore prodotto dal server
+	 * @return     mixed  La risposta ricevuta dal server
+	 */
+	public function updateChanged(string $id, $datas){
+		$datas['override'] = true;
+		return $this->update ($id, $datas);
+	}
+
+	
 
 	/**
 	 * Recupera le informazioni di un annuncio
@@ -202,6 +223,46 @@ class Ad {
 	 */
 	public function unapprove(string $id, int $version, string $reason = null){
 		$res = $this->api->call ("ads/unapprove/".urlencode($id)."/{$version}");
+		if (!$res->success){
+			throw (new FailedCallException($res->errorMessage))->setExceptionType($res->errorType);
+		}
+		return $res->response;
+	}
+
+
+
+	/**
+	 * Cambia lo stato di un annuncio
+	 *
+	 * @param      string  $id     l'id dell'annuncio
+	 * @param      int  $version     la versione dell'annuncio (se non specificato viene utilizzata l'ultima versione)
+	 * @param      string  $status     il nuovo stato dell'annuncio
+	 *
+	 * @api
+	 * @throws     FailedCallException  Nel caso in cui il server REST abbia risposto con un errore. L'eccezione conterrà il messaggio di errore prodotto dal server
+	 * @return     mixed  La risposta ricevuta dal server
+	 */
+	public function setStatus(string $id, string $status, int $version = null){
+		$res = $this->api->call ("ads/".urlencode($id)."/status/{$status}".($version ? "/{$version}" : ''), null, 'PUT');
+		if (!$res->success){
+			throw (new FailedCallException($res->errorMessage))->setExceptionType($res->errorType);
+		}
+		return $res->response;
+	}
+
+
+	/**
+	 * Torna lo stato di un annuncio
+	 *
+	 * @param      string  $id     l'id dell'annuncio
+	 * @param      int  $version     la versione dell'annuncio (se non specificato viene utilizzata l'ultima versione)
+	 *
+	 * @api
+	 * @throws     FailedCallException  Nel caso in cui il server REST abbia risposto con un errore. L'eccezione conterrà il messaggio di errore prodotto dal server
+	 * @return     mixed  La risposta ricevuta dal server
+	 */
+	public function getStatus(string $id, int $version = null){
+		$res = $this->api->call ("ads/".urlencode($id)."/status".($version ? "/{$version}" : ''));
 		if (!$res->success){
 			throw (new FailedCallException($res->errorMessage))->setExceptionType($res->errorType);
 		}
