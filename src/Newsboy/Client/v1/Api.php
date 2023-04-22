@@ -328,6 +328,14 @@ class Api{
 	}
 
 	
+	public function getPropertyAdmittedValues(string $property){
+		$res = $this->call ("ads/property/{$property}/admitted-values");
+		if (!$res->success){
+			throw (new FailedCallException($res->errorMessage))->setExceptionType($res->errorType);
+		}
+		return $res->response;
+	} 
+
 	public function getPropertiesList(string $category){
 		$res = $this->call ("ads/properties/{$category}");
 		if (!$res->success){
