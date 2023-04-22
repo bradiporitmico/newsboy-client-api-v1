@@ -55,13 +55,16 @@ class ApiPersistent extends Api{
 
 	/** @override **/
 	public function call (string $path, $post = null, $method=null){
-		self::$calls [] = "[".($method ? : 'GET')."] ".$path;
+		$method = $method ? : 'GET';
+		$post_data = $post ? md5 (json_encode ($post)) : '';
+		$cache_key = "{$method} {$path}{$post_data}";
+		self::$calls [] = "[{$method}] ".$path;
 		try{
-			if (!(self::$cached_call[$path] ?? false)){
+			if (!(self::$cached_call[$cache_key] ?? false)){
 				// chiamo la call originale e attendo esplosione o esito corretto
-				self::$cached_call[$path] = parent::call($path, $post, $method);
+				self::$cached_call[$cache_key] = parent::call($path, $post, $method);
 			}
-			return self::$cached_call[$path];
+			return self::$cached_call[$cache_key];
 		}catch (FailedCallException $e){
 			// controllo se è esplosa per via del token scaduto
 			$json = $e->getJson();
