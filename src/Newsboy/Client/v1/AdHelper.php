@@ -1,4 +1,4 @@
-<?php 
+<?php
 
 namespace Newsboy\Client\v1;
  
@@ -14,32 +14,43 @@ class AdHelper implements \ArrayAccess{
 	}
 
 	/** ArrayAccess implementations */
-  public function offsetSet(mixed $offset, mixed $value) : void {
+  public function offsetSet($offset, $value) {
   	$this->fields->$offset = $value;
   }
 
-  public function offsetExists(mixed $offset) : bool {
+  public function offsetExists($offset) {
   	return isset($this->fields->$offset);
   }
 
-	public function offsetUnset(mixed $offset) : void {
+	public function offsetUnset($offset) {
   	unset($this->fields->$offset);
   }
 	
-	public function offsetGet(mixed $offset) : mixed  {
+	public function offsetGet($offset) {
   	return $this->fields->$offset ?? null;
   }
 
-	public function isAddressHidden() : bool{
-		return $this->hasOption(\Newsboy\Client\v1\AdOptions::ADDRESS_HIDDEN);
+	public function getImages ($type = 'detail'){
+		if ($this->fields->assets->photo ?? false){
+			$images = [];
+			foreach ($this->fields->assets->photo as $photo){
+				$images [] = $photo->$type->url ?? null;
+			}
+			return $images;
+		} else  {
+			return $this->fields->images ?? [];
+		}
 	}
 
-	public function isPriceHidden() : bool{
-		return $this->hasOption(\Newsboy\Client\v1\AdOptions::PRICE_HIDDEN) || $this->hasOption(\Newsboy\Client\v1\AdOptions::PRICE_PRIVATE_NOGOTIATION);
-	}
-
-	public function isGeoPositionHidden() : bool{
-		return $this->hasOption(\Newsboy\Client\v1\AdOptions::POSITION_HIDDEN);
+	public function getPlanimetries ($type = 'detail'){
+		if ($this->fields->assets->planimetry ?? false){
+			$images = [];
+			foreach ($this->fields->assets->planimetry as $photo){
+				$images [] = $photo->$type->url ?? null;
+			}
+			return $images;
+		}
+		return $this->fields->images_floor_plans ?? [];
 	}
 
 	public function getTitle (){
@@ -64,6 +75,16 @@ class AdHelper implements \ArrayAccess{
 				.($address_number ? " {$address_number}":'')
 				." a {$municipality_name}";
 	}
+
+	public function isAffitto(){
+		return ($this->fields->type ?? null) == "rent";
+	}
+
+	public function isVendita(){
+		return ($this->fields->type ?? null) == "sale";
+	}
+
+
 
 
 }
