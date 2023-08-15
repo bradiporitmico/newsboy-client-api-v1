@@ -8,6 +8,7 @@ class Api{
 	static $calls = [];
 	static $total_time = 0;
 	var $request_id;
+	var $url;
 
 
 	/**
@@ -56,20 +57,15 @@ class Api{
 	 *
 	 * @return     Object     Un oggetto derivante dal json ritornato
 	 */
-	public function call (string $path, $post = null, $method=null){
+	public function call (string $path, $post = null, $method = null){
 		$time = microtime(true);
-		// if (!$this->curl){
-		// 	$this->curl = curl_init();
-		// }
 		$this->url = "{$this->base_url}{$path}";
-		// \Nicer::print_r ([
-		// 	'url'=>$this->url,
-		// 	'post'=>$post,
-		// 	'method'=>$method ? : 'GET',
-		// ], 'API::call');
+		// \Nicer::print_ru ([
+		// 	'url' => $this->url,
+		// 	'post' => $post,
+		// 	'method' => $method,
+		// ], __METHOD__);
 
-		// self::$curl = curl_init();
-		
 		curl_setopt(self::$curl, CURLOPT_URL, $this->url);
 		if ($this->token){
 			curl_setopt(self::$curl, CURLOPT_HTTPHEADER, ["Authorization: bearer {$this->token}"]);
@@ -80,6 +76,7 @@ class Api{
 			curl_setopt(self::$curl, CURLOPT_POSTFIELDS, $post);
 		}
 		if ($method){
+			// \Nicer::print_ru ($method);
 			curl_setopt(self::$curl, CURLOPT_CUSTOMREQUEST, $method);
 		}
 		curl_setopt(self::$curl, CURLOPT_RETURNTRANSFER, true);
@@ -191,6 +188,7 @@ class Api{
 	 */
 	public function login (string $username, string $password, string $scope = null){
 		$this->resetBaseUrl();
+		// pre_print_ru (['username'=>$username, 'password'=>$password, 'scope'=>$scope]);
 		$res = $this->call('login', ['username'=>$username, 'password'=>$password, 'scope'=>$scope]);
 		if (!$res->success){
 			throw (new FailedCallException($res->errorMessage))->setExceptionType($res->errorType);

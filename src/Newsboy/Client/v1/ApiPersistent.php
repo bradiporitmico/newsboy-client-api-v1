@@ -30,6 +30,7 @@ class ApiPersistent extends Api{
 
 	public function login (string $username, string $password, string $scope = null){
 		$persistent = $this->getPersistentLoginData();
+		// pre_print_ru ($persistent);
 		if (!$persistent || ($persistent['username'] != $username)){
 			parent::login ($username, $password, $scope);
 			$this->setPersistentLoginData ([
@@ -55,9 +56,14 @@ class ApiPersistent extends Api{
 
 	/** @override **/
 	public function call (string $path, $post = null, $method=null){
-		$method = $method ? : 'GET';
+		// $method = $method ? : 'GET';
 		$post_data = $post ? md5 (json_encode ($post)) : '';
+		// if ($post && (!$method)) {
+		// 	$method = 'POST';
+		// }
+		// $method = $method ? : ($post ? 'POST' : 'GET');
 		$cache_key = "{$method} {$path}{$post_data}";
+		// pre_print_ru ($cache_key); die;
 		self::$calls [] = "[{$method}] ".$path;
 		try{
 			if (!(self::$cached_call[$cache_key] ?? false)){
@@ -68,6 +74,7 @@ class ApiPersistent extends Api{
 		}catch (FailedCallException $e){
 			// controllo se è esplosa per via del token scaduto
 			$json = $e->getJson();
+			// pre_print_ru ($json); die;
 			// print_r ($json); 
 			// print_r ($e); die;
 			if (!$json || $json->errorType == 'Firebase\JWT\ExpiredException'){
